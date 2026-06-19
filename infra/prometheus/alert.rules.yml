@@ -1,0 +1,11 @@
+groups:
+  - name: circuit-breaker-alerts
+    rules:
+      - alert: OpenAICircuitBreakerOpen
+        expr: quarkrag_circuit_breaker_state{provider="openai"} == 1
+        for: 60s
+        labels:
+          severity: critical
+        annotations:
+          summary: "OpenAI LLM Circuit Breaker is OPEN"
+          description: "The circuit breaker for OpenAI has transitioned to OPEN state for more than 60 seconds. Requests are failing back to local Ollama model."

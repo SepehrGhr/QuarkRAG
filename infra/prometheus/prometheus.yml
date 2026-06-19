@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - "alert.rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+scrape_configs:
+  - job_name: "query-service"
+    static_configs:
+      - targets: ["query-service:8000"]
+
+  - job_name: "llm-provider-service"
+    static_configs:
+      - targets: ["llm-provider-service:8000"]

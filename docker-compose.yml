@@ -90,6 +90,124 @@ services:
       redis:
         condition: service_healthy
 
+  db-migrate:
+    build:
+      context: ./services/ingestion
+      dockerfile: Dockerfile
+    command: alembic upgrade head
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
+    volumes:
+      - ./migrations:/app/migrations
+      - ./alembic.ini:/app/alembic.ini
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ingestion-service:
+    build:
+      context: ./services/ingestion
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
+      - KAFKA_BROKER_URL=kafka:9092
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka-setup:
+        condition: service_completed_successfully
+      db-migrate:
+        condition: service_completed_successfully
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ingestion.rule=PathPrefix(\"/documents\")"
+      - "traefik.http.routers.ingestion.entrypoints=web"
+      - "traefik.http.routers.ingestion.middlewares=rate-limit"
+      - "traefik.http.services.ingestion.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.rate-limit.ratelimit.average=100"
+      - "traefik.http.middlewares.rate-limit.ratelimit.burst=50"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  embedding-service:
+    build:
+      context: ./services/embedding
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
+      - KAFKA_BROKER_URL=kafka:9092
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - REDIS_URL=redis://redis:6379/0
+      - EMBEDDING_PROVIDER=local
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka-setup:
+        condition: service_completed_successfully
+      qdrant:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/readiness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  query-service:
+    build:
+      context: ./services/query
+      dockerfile: Dockerfile
+    environment:
+      - KAFKA_BROKER_URL=kafka:9092
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - REDIS_URL=redis://redis:6379/0
+      - LLM_PROVIDER_SERVICE_URL=http://llm-provider-service:8000
+      - EMBEDDING_PROVIDER=local
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    depends_on:
+      kafka-setup:
+        condition: service_completed_successfully
+      qdrant:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      llm-provider-service:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.query.rule=PathPrefix(\"/query\")"
+      - "traefik.http.routers.query.entrypoints=web"
+      - "traefik.http.routers.query.middlewares=rate-limit"
+      - "traefik.http.services.query.loadbalancer.server.port=8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  llm-provider-service:
+    build:
+      context: ./services/llm-provider
+      dockerfile: Dockerfile
+    environment:
+      - OPENAI_API_KEY=your-openai-key-here
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL_NAME=llama3
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 networks:
   default:
     name: quarkrag_net
