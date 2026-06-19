@@ -1,0 +1,10 @@
+import pytest
+from unittest.mock import AsyncMock, patch
+
+@pytest.fixture(autouse=True)
+def mock_embedding_deps():
+    with patch("services.embedding.kafka.producer.kafka_producer.start", new_callable=AsyncMock), \
+         patch("services.embedding.kafka.producer.kafka_producer.stop", new_callable=AsyncMock), \
+         patch("services.embedding.kafka.producer.kafka_producer.send_message", new_callable=AsyncMock), \
+         patch("services.embedding.main.OTLPSpanExporter"):
+        yield
