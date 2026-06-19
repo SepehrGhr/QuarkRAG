@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: quarkrag
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:v3.0
+          args:
+            - "--api.insecure=true"
+            - "--providers.kubernetesingress=true"
+            - "--entrypoints.web.address=:8000"
+          ports:
+            - containerPort: 8000
+            - containerPort: 8080
+              name: dashboard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+  namespace: quarkrag
+spec:
+  type: LoadBalancer
+  selector:
+    app: traefik
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      name: web
+    - protocol: TCP
+      port: 8088
+      targetPort: 8080
+      name: dashboard

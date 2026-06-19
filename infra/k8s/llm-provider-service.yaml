@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-provider-service
+  namespace: quarkrag
+  labels:
+    app: llm-provider-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-provider-service
+  template:
+    metadata:
+      labels:
+        app: llm-provider-service
+    spec:
+      containers:
+        - name: llm-provider-service
+          image: quarkrag/llm-provider-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: quarkrag-config
+            - secretRef:
+                name: quarkrag-secrets
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-provider-service
+  namespace: quarkrag
+spec:
+  selector:
+    app: llm-provider-service
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quarkrag-config
+  namespace: quarkrag
+data:
+  # Database Configurations
+  QDRANT_HOST: "qdrant"
+  QDRANT_PORT: "6333"
+  REDIS_URL: "redis://redis:6379/0"
+  KAFKA_BROKER_URL: "kafka:9092"
+  
+  # Service URLs
+  LLM_PROVIDER_SERVICE_URL: "http://llm-provider-service:8000"
+  
+  # Observability
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  
+  # Application Config
+  EMBEDDING_PROVIDER: "openai"
+  OLLAMA_URL: "http://ollama:11434"
+  OLLAMA_MODEL_NAME: "llama3"
