@@ -99,8 +99,8 @@ services:
     environment:
       - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
     volumes:
-      - ./migrations:/app/migrations
-      - ./alembic.ini:/app/alembic.ini
+      - ./migrations:/app/services/ingestion/migrations
+      - ./alembic.ini:/app/services/ingestion/alembic.ini
     depends_on:
       postgres:
         condition: service_healthy
@@ -129,7 +129,7 @@ services:
       - "traefik.http.middlewares.rate-limit.ratelimit.average=100"
       - "traefik.http.middlewares.rate-limit.ratelimit.burst=50"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -156,7 +156,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/readiness"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/readiness')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -189,7 +189,7 @@ services:
       - "traefik.http.routers.query.middlewares=rate-limit"
       - "traefik.http.services.query.loadbalancer.server.port=8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -204,7 +204,7 @@ services:
       - OLLAMA_MODEL_NAME=llama3
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 3

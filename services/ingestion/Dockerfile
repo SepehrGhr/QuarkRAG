@@ -19,13 +19,14 @@ RUN groupadd -g 10001 appgroup && \
     useradd -u 10001 -g appgroup appuser
 
 COPY --from=builder /install /usr/local
-COPY . /app
+COPY . /app/services/ingestion
 
 RUN chown -R appuser:appgroup /app
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
+WORKDIR /app/services/ingestion
 USER appuser
 
 EXPOSE 8000

@@ -7,12 +7,16 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-# Make sure this points to your project's Base and models
-# from services.ingestion.models.document import Base
-# target_metadata = Base.metadata
-target_metadata = None
+from services.ingestion.database import Base
+from services.ingestion.models.document import Document
+target_metadata = Base.metadata
 
 config = context.config
+
+import os
+db_url = os.getenv("DATABASE_URL")
+if db_url:
+    config.set_main_option("sqlalchemy.url", db_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

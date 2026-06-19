@@ -42,7 +42,7 @@ ENV HF_HOME=/home/appuser/.cache/huggingface
 RUN mkdir -p /home/appuser/.cache/huggingface
 
 COPY --from=builder /install /usr/local
-COPY . /app
+COPY . /app/services/embedding
 
 RUN chown -R appuser:appgroup /app && \
     chown -R appuser:appgroup /home/appuser/.cache
@@ -50,6 +50,7 @@ RUN chown -R appuser:appgroup /app && \
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
+WORKDIR /app/services/embedding
 USER appuser
 
 EXPOSE 8000
