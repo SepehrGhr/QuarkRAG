@@ -143,7 +143,7 @@ services:
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
       - REDIS_URL=redis://redis:6379/0
-      - EMBEDDING_PROVIDER=local
+      - EMBEDDING_PROVIDER=openai
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
     depends_on:
       postgres:
@@ -170,7 +170,7 @@ services:
       - QDRANT_PORT=6333
       - REDIS_URL=redis://redis:6379/0
       - LLM_PROVIDER_SERVICE_URL=http://llm-provider-service:8000
-      - EMBEDDING_PROVIDER=local
+      - EMBEDDING_PROVIDER=openai
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
     depends_on:
       kafka-setup:

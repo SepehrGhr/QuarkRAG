@@ -1,25 +1,24 @@
 import asyncio
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 from services.query.embedders.base import BaseEmbedder
 from services.query.logging_config import logger
 
 class LocalEmbedder(BaseEmbedder):
     def __init__(self):
-        logger.info("Initializing LocalEmbedder with all-MiniLM-L6-v2 model in query-service")
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
-        logger.info("LocalEmbedder model loaded successfully in query-service")
+        logger.error("LocalEmbedder is disabled to reduce image weight and memory usage")
+        raise NotImplementedError("Local embedding model is disabled. Please configure EMBEDDING_PROVIDER=openai.")
 
     async def embed_text(self, text: str) -> list[float]:
-        return await asyncio.to_thread(self._embed_sync, text)
+        raise NotImplementedError()
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        return await asyncio.to_thread(self._embed_batch_sync, texts)
+        raise NotImplementedError()
 
     def _embed_sync(self, text: str) -> list[float]:
-        return self.model.encode(text).tolist()
+        raise NotImplementedError()
 
     def _embed_batch_sync(self, texts: list[str]) -> list[list[float]]:
-        return self.model.encode(texts).tolist()
+        raise NotImplementedError()
 
     @property
     def dimension(self) -> int:

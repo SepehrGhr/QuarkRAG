@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     QDRANT_PORT: int = 6333
     REDIS_URL: str = "redis://redis:6379/0"
     
-    EMBEDDING_PROVIDER: str = "local"  # "local" or "openai"
+    EMBEDDING_PROVIDER: str = "openai"  # "local" or "openai"
     OPENAI_API_KEY: str = "your-openai-key-here"
     
     OTEL_EXPORTER_OTLP_ENDPOINT: str = "http://jaeger:4317"
