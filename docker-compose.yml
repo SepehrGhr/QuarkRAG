@@ -28,6 +28,7 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_CFG_NODE_ID: '1'
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_CFG_MESSAGE_MAX_BYTES: 1048576
     ports:
       - "9092:9092"
     healthcheck:
@@ -55,7 +56,7 @@ services:
     ports:
       - "6333:6333"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      test: ["CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/6333"]
       interval: 5s
       timeout: 5s
       retries: 5
