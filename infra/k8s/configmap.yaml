@@ -5,18 +5,18 @@ metadata:
   namespace: quarkrag
 data:
   # Database Configurations
-  QDRANT_HOST: "qdrant"
-  QDRANT_PORT: "6333"
-  REDIS_URL: "redis://redis:6379/0"
-  KAFKA_BROKER_URL: "kafka:9092"
+  QDRANT_HOST: "$QDRANT_HOST"
+  QDRANT_PORT: "$QDRANT_PORT"
+  REDIS_URL: "$REDIS_URL"
+  KAFKA_BROKER_URL: "$KAFKA_BROKER_URL"
   
   # Service URLs
-  LLM_PROVIDER_SERVICE_URL: "http://llm-provider-service:8000"
+  LLM_PROVIDER_SERVICE_URL: "$LLM_PROVIDER_SERVICE_URL"
   
   # Observability
-  OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "$OTEL_EXPORTER_OTLP_ENDPOINT"
   
   # Application Config
-  EMBEDDING_PROVIDER: "openai"
-  OLLAMA_URL: "http://ollama:11434"
-  OLLAMA_MODEL_NAME: "llama3"
+  EMBEDDING_PROVIDER: "$EMBEDDING_PROVIDER"
+  OLLAMA_URL: "$OLLAMA_URL"
+  OLLAMA_MODEL_NAME: "$OLLAMA_MODEL_NAME"

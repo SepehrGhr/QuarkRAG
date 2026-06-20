@@ -1,4 +1,7 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_env_file = Path(__file__).resolve().parent.parent.parent / ".env"
 
 class Settings(BaseSettings):
     KAFKA_BROKER_URL: str = "kafka:9092"
@@ -17,6 +20,11 @@ class Settings(BaseSettings):
     QUERY_EVENTS_TOPIC: str = "query.events"
     COLLECTION_NAME: str = "quarkrag_documents"
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(str(_env_file), ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
 settings = Settings()
+

@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: quarkrag
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: quarkrag
+      POSTGRES_USER: ${POSTGRES_USER:-quarkrag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+      POSTGRES_DB: ${POSTGRES_DB:-quarkrag}
     ports:
       - "5432:5432"
     healthcheck:
@@ -97,7 +97,7 @@ services:
       dockerfile: Dockerfile
     command: alembic upgrade head
     environment:
-      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag}
     volumes:
       - ./migrations:/app/services/ingestion/migrations
       - ./alembic.ini:/app/services/ingestion/alembic.ini
@@ -110,9 +110,9 @@ services:
       context: ./services/ingestion
       dockerfile: Dockerfile
     environment:
-      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
-      - KAFKA_BROKER_URL=kafka:9092
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag}
+      - KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     depends_on:
       postgres:
         condition: service_healthy
@@ -139,13 +139,14 @@ services:
       context: ./services/embedding
       dockerfile: Dockerfile
     environment:
-      - DATABASE_URL=postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag
-      - KAFKA_BROKER_URL=kafka:9092
-      - QDRANT_HOST=qdrant
-      - QDRANT_PORT=6333
-      - REDIS_URL=redis://redis:6379/0
-      - EMBEDDING_PROVIDER=openai
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag}
+      - KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
+      - QDRANT_HOST=${QDRANT_HOST:-qdrant}
+      - QDRANT_PORT=${QDRANT_PORT:-6333}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     depends_on:
       postgres:
         condition: service_healthy
@@ -166,13 +167,14 @@ services:
       context: ./services/query
       dockerfile: Dockerfile
     environment:
-      - KAFKA_BROKER_URL=kafka:9092
-      - QDRANT_HOST=qdrant
-      - QDRANT_PORT=6333
-      - REDIS_URL=redis://redis:6379/0
-      - LLM_PROVIDER_SERVICE_URL=http://llm-provider-service:8000
-      - EMBEDDING_PROVIDER=openai
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
+      - QDRANT_HOST=${QDRANT_HOST:-qdrant}
+      - QDRANT_PORT=${QDRANT_PORT:-6333}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - LLM_PROVIDER_SERVICE_URL=${LLM_PROVIDER_SERVICE_URL:-http://llm-provider-service:8000}
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     depends_on:
       kafka-setup:
         condition: service_completed_successfully
@@ -199,10 +201,10 @@ services:
       context: ./services/llm-provider
       dockerfile: Dockerfile
     environment:
-      - OPENAI_API_KEY=your-openai-key-here
-      - OLLAMA_URL=http://ollama:11434
-      - OLLAMA_MODEL_NAME=llama3
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_URL=${OLLAMA_URL:-http://ollama:11434}
+      - OLLAMA_MODEL_NAME=${OLLAMA_MODEL_NAME:-llama3}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s

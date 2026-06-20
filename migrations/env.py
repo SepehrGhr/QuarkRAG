@@ -11,9 +11,30 @@ from services.ingestion.database import Base
 from services.ingestion.models.document import Document
 target_metadata = Base.metadata
 
+from pathlib import Path
+import os
+
+# Load environment variables from central .env file if running locally
+root_dir = Path(__file__).resolve().parent.parent
+dotenv_path = root_dir / ".env"
+if dotenv_path.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(dotenv_path)
+    except ImportError:
+        # Fallback manual dotenv loader if python-dotenv is not installed
+        with open(dotenv_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("'\"")
+                    if key not in os.environ:
+                        os.environ[key] = val
+
 config = context.config
 
-import os
 db_url = os.getenv("DATABASE_URL")
 if db_url:
     config.set_main_option("sqlalchemy.url", db_url)

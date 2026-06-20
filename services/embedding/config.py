@@ -1,7 +1,10 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+_env_file = Path(__file__).resolve().parent.parent.parent / ".env"
+
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag"
+    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/dbname"
     KAFKA_BROKER_URL: str = "kafka:9092"
     QDRANT_HOST: str = "qdrant"
     QDRANT_PORT: int = 6333
@@ -20,6 +23,11 @@ class Settings(BaseSettings):
     EMBEDDED_TOPIC: str = "docs.embedded"
     COLLECTION_NAME: str = "quarkrag_documents"
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(str(_env_file), ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
 settings = Settings()
+
