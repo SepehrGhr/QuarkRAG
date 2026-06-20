@@ -7,6 +7,21 @@ on:
     branches: [ main ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install Linting Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      - name: Run Lint Checks
+        run: ruff check .
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -18,7 +33,33 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio
+          pip install -r services/ingestion/requirements.txt
+          pip install -r services/embedding/requirements.txt
+          pip install -r services/llm-provider/requirements.txt
+          pip install -r services/query/requirements.txt
+          pip install pytest pytest-asyncio pytest-mock httpx
       - name: Run tests
+        env:
+          # Provide dummy variables so config parsing doesn't fail
+          DATABASE_URL: postgresql+asyncpg://user:pass@localhost:5432/db
+          KAFKA_BROKER_URL: localhost:9092
+          QDRANT_HOST: localhost
+          QDRANT_PORT: 6333
+          REDIS_URL: redis://localhost:6379/0
+          OPENAI_API_KEY: fake-key
         run: |
-          pytest tests/
+          PYTHONPATH=. pytest tests/
+
+  build-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Ingestion Service Image
+        run: docker build -t quarkrag-ingestion-service:latest -f services/ingestion/Dockerfile services/ingestion
+      - name: Build Embedding Service Image
+        run: docker build -t quarkrag-embedding-service:latest -f services/embedding/Dockerfile services/embedding
+      - name: Build LLM Provider Service Image
+        run: docker build -t quarkrag-llm-provider-service:latest -f services/llm-provider/Dockerfile services/llm-provider
+      - name: Build Query Service Image
+        run: docker build -t quarkrag-query-service:latest -f services/query/Dockerfile services/query
+
