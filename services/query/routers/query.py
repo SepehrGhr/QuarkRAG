@@ -97,6 +97,8 @@ async def process_query(request: QueryRequest):
             raise HTTPException(status_code=502, detail="LLM provider service failed")
             
         answer = llm_response.json()["answer"]
+    except HTTPException:
+        raise
     except httpx.RequestError as re:
         logger.exception("HTTP connection to LLM provider service failed")
         raise HTTPException(status_code=502, detail=f"LLM provider connection failed: {str(re)}")

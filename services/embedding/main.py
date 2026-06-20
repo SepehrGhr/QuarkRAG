@@ -20,8 +20,6 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 setup_logging()
 
-consumer_tasks = []
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting embedding-service")
@@ -44,6 +42,7 @@ async def lifespan(app: FastAPI):
     await kafka_producer.start()
     
     # 5. Start consumers as background tasks
+    consumer_tasks = []
     loop = asyncio.get_running_loop()
     raw_task = loop.create_task(run_raw_consumer())
     delete_task = loop.create_task(run_delete_consumer())

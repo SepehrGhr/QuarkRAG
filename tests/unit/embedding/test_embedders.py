@@ -3,15 +3,9 @@ from unittest.mock import MagicMock, patch, AsyncMock
 from services.embedding.embedders.local import LocalEmbedder
 from services.embedding.embedders.openai import OpenAIEmbedder
 
-def test_local_embedder_dimension():
-    with patch("services.embedding.embedders.local.SentenceTransformer") as mock_transformer:
-        mock_model = MagicMock()
-        mock_model.encode.return_value.tolist.return_value = [0.1] * 384
-        mock_transformer.return_value = mock_model
-        
-        embedder = LocalEmbedder()
-        assert embedder.dimension == 384
-        assert embedder.model_name == "all-MiniLM-L6-v2"
+def test_local_embedder_disabled():
+    with pytest.raises(NotImplementedError):
+        LocalEmbedder()
 
 @pytest.mark.asyncio
 async def test_openai_embedder_dimension():

@@ -19,7 +19,8 @@ async def test_validate_embedding_consistency_success():
     mock_embedder.model_name = "all-MiniLM-L6-v2"
     
     with patch("services.query.startup.embedding_validation.AsyncQdrantClient", return_value=mock_client), \
-         patch("services.query.startup.embedding_validation.get_embedder", return_value=mock_embedder):
+         patch("services.query.startup.embedding_validation.get_embedder", return_value=mock_embedder), \
+         patch("services.query.startup.embedding_validation.settings.EMBEDDING_PROVIDER", "local"):
         
         await validate_embedding_consistency()
 

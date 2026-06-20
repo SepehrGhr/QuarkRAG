@@ -14,7 +14,8 @@ async def test_init_qdrant_collection_creates_new():
     mock_embedder.model_name = "all-MiniLM-L6-v2"
     
     with patch("services.embedding.qdrant.client.get_qdrant_client", return_value=mock_client), \
-         patch("services.embedding.qdrant.client.get_embedder", return_value=mock_embedder):
+         patch("services.embedding.qdrant.client.get_embedder", return_value=mock_embedder), \
+         patch("services.embedding.qdrant.client.settings.EMBEDDING_PROVIDER", "local"):
         
         await init_qdrant_collection()
         
