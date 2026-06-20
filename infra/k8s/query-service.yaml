@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: query-service
-          image: quarkrag/query-service:latest
+          image: quarkrag-query-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000

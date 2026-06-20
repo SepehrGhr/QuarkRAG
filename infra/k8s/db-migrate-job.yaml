@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate
+  namespace: quarkrag
+spec:
+  template:
+    spec:
+      containers:
+        - name: db-migrate
+          image: quarkrag-ingestion-service:latest
+          imagePullPolicy: IfNotPresent
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: quarkrag-config
+            - secretRef:
+                name: quarkrag-secrets
+          volumeMounts:
+            - name: migrations
+              mountPath: /app/services/ingestion/migrations
+            - name: alembic-config
+              mountPath: /app/services/ingestion/alembic.ini
+      restartPolicy: OnFailure
+      volumes:
+        - name: migrations
+          hostPath:
+            path: /home/sepehr/QuarkRAG/migrations
+        - name: alembic-config
+          hostPath:
+            path: /home/sepehr/QuarkRAG/alembic.ini

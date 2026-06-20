@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: llm-provider-service
-          image: quarkrag/llm-provider-service:latest
+          image: quarkrag-llm-provider-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
