@@ -138,6 +138,8 @@ services:
     build:
       context: ./services/embedding
       dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://quarkrag:password123@postgres:5432/quarkrag}
       - KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
@@ -146,6 +148,9 @@ services:
       - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
       - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
+      - OLLAMA_EMBEDDING_MODEL_NAME=${OLLAMA_EMBEDDING_MODEL_NAME:-nomic-embed-text}
+      - OLLAMA_EMBEDDING_DIMENSION=${OLLAMA_EMBEDDING_DIMENSION:-768}
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     depends_on:
       postgres:
@@ -166,6 +171,8 @@ services:
     build:
       context: ./services/query
       dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - KAFKA_BROKER_URL=${KAFKA_BROKER_URL:-kafka:9092}
       - QDRANT_HOST=${QDRANT_HOST:-qdrant}
@@ -174,6 +181,9 @@ services:
       - LLM_PROVIDER_SERVICE_URL=${LLM_PROVIDER_SERVICE_URL:-http://llm-provider-service:8000}
       - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
+      - OLLAMA_EMBEDDING_MODEL_NAME=${OLLAMA_EMBEDDING_MODEL_NAME:-nomic-embed-text}
+      - OLLAMA_EMBEDDING_DIMENSION=${OLLAMA_EMBEDDING_DIMENSION:-768}
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     depends_on:
       kafka-setup:
@@ -200,9 +210,11 @@ services:
     build:
       context: ./services/llm-provider
       dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OLLAMA_URL=${OLLAMA_URL:-http://ollama:11434}
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
       - OLLAMA_MODEL_NAME=${OLLAMA_MODEL_NAME:-llama3}
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
     healthcheck:

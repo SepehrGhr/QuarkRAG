@@ -11,6 +11,9 @@ def get_embedder():
         elif settings.EMBEDDING_PROVIDER == "openai":
             from services.embedding.embedders.openai import OpenAIEmbedder
             _embedder = OpenAIEmbedder()
+        elif settings.EMBEDDING_PROVIDER == "ollama":
+            from services.embedding.embedders.ollama import OllamaEmbedder
+            _embedder = OllamaEmbedder()
         else:
             raise ValueError(f"Unknown embedding provider: {settings.EMBEDDING_PROVIDER}")
     return _embedder
