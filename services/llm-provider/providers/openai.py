@@ -6,7 +6,10 @@ from services.llm_provider.logging_config import logger
 
 class OpenAIProvider(BaseLLMProvider):
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.client = AsyncOpenAI(
+            api_key=settings.OPENAI_API_KEY,
+            base_url=settings.OPENAI_API_BASE
+        )
 
     @retry(
         stop=stop_after_attempt(3),

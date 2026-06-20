@@ -6,6 +6,7 @@ _env_file = Path(__file__).resolve().parent.parent.parent / ".env"
 class Settings(BaseSettings):
     OPENAI_API_KEY: str = "your-openai-key-here"
     OPENAI_MODEL_NAME: str = "gpt-4o-mini"
+    OPENAI_API_BASE: str = "https://api.openai.com/v1"
     
     OLLAMA_URL: str = "http://ollama:11434"
     OLLAMA_MODEL_NAME: str = "llama3"
