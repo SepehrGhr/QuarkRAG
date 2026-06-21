@@ -208,7 +208,7 @@ services:
 
   llm-provider-service:
     build:
-      context: ./services/llm-provider
+      context: ./services/llm_provider
       dockerfile: Dockerfile
     extra_hosts:
       - "host.docker.internal:host-gateway"
