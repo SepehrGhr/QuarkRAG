@@ -69,66 +69,39 @@ Query responses are cached in **Redis**, delivering sub-millisecond responses fo
 
 ## 🏛️ Architecture
 
-```mermaid
-flowchart LR
-    subgraph Client
-        A[User / API Client]
-    end
+```
+                              ┌─────────────────────────────────────────────────┐
+                              │              Traefik API Gateway                │
+                              │           (Rate Limiting + Routing)             │
+                              └──────────┬──────────────────┬───────────────────┘
+                                         │                  │
+                                    /documents            /query
+                                         │                  │
+                         ┌───────────────▼──┐        ┌──────▼────────────┐
+                         │    Ingestion     │        │   Query Service   │
+                         │    Service       │        │                   │
+                         └──┬──────────┬───┘        └──┬──────┬────┬───┘
+                            │          │               │      │    │
+                     Store  │  Publish │        Search │ Cache│    │ Get
+                   metadata │  chunks  │       vectors │  hit │    │ answer
+                            │          │               │      │    │
+                    ┌───────▼──┐  ┌────▼────┐  ┌───────▼┐  ┌──▼─┐ │
+                    │PostgreSQL│  │  Kafka  │  │ Qdrant │  │Redis│ │
+                    └───────▲──┘  └────┬────┘  └───▲────┘  └────┘ │
+                            │          │           │               │
+                     Update │   docs.raw /         │               │
+                     status │   docs.delete        │               │
+                            │          │      Store│               │
+                         ┌──┴──────────▼──┐  vectors       ┌──────▼────────────┐
+                         │   Embedding    ├────────┘       │  LLM Provider     │
+                         │   Service      │               │  Service           │
+                         └────────────────┘               │  (Circuit Breaker) │
+                                                          └───────┬────────────┘
+                                                                  │
+                                                          OpenAI / Ollama
 
-    subgraph Gateway
-        T[Traefik Reverse Proxy]
-    end
-
-    subgraph Services
-        I[Ingestion Service]
-        E[Embedding Service]
-        L[LLM Provider Service]
-        Q[Query Service]
-    end
-
-    subgraph Data Stores
-        PG[PostgreSQL]
-        QD[Qdrant]
-        RD[Redis]
-    end
-
-    subgraph Messaging
-        K[Kafka]
-    end
-
-    subgraph Observability
-        P[Prometheus]
-        G[Grafana]
-        J[Jaeger]
-    end
-
-    A -->|HTTP| T
-    T -->|/documents| I
-    T -->|/query| Q
-
-    I -->|Store metadata| PG
-    I -->|Publish chunks| K
-
-    K -->|docs.raw| E
-    K -->|docs.delete| E
-
-    E -->|Generate vectors| QD
-    E -->|Update status| PG
-
-    Q -->|Search vectors| QD
-    Q -->|Check cache| RD
-    Q -->|Get answer| L
-
-    L -->|OpenAI / Ollama| L
-
-    I -.->|Traces| J
-    E -.->|Traces| J
-    Q -.->|Traces| J
-    L -.->|Traces| J
-
-    P -.->|Scrape| Q
-    P -.->|Scrape| L
-    G -.->|Query| P
+        ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ──
+         Observability:  Prometheus + Grafana (Metrics)  │  Jaeger (Traces)
 ```
 
 <br/>
@@ -371,17 +344,7 @@ All tests use mocked dependencies (no running LLM, embedding model, or external 
 
 <br/>
 
-## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a pull request. For major changes, open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-<br/>
 
 ## 📄 License
 
