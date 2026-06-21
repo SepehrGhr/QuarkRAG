@@ -104,6 +104,8 @@ Query responses are cached in **Redis**, delivering sub-millisecond responses fo
          Observability:  Prometheus + Grafana (Metrics)  │  Jaeger (Traces)
 ```
 
+> 📐 **Deep dive:** For detailed design decisions, data flow walkthroughs, resilience patterns, caching strategy, and more — see [`docs/architecture.md`](docs/architecture.md).
+
 <br/>
 
 ## 🧩 Services
