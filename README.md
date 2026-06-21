@@ -72,34 +72,34 @@ Query responses are cached in **Redis**, delivering sub-millisecond responses fo
 ```mermaid
 flowchart LR
     subgraph Client
-        A["📄 User / API Client"]
+        A[User / API Client]
     end
 
     subgraph Gateway
-        T["🔀 Traefik\nReverse Proxy\n+ Rate Limiting"]
+        T[Traefik Reverse Proxy]
     end
 
     subgraph Services
-        I["📥 Ingestion\nService"]
-        E["🧬 Embedding\nService"]
-        L["🤖 LLM Provider\nService"]
-        Q["🔍 Query\nService"]
+        I[Ingestion Service]
+        E[Embedding Service]
+        L[LLM Provider Service]
+        Q[Query Service]
     end
 
     subgraph Data Stores
-        PG["🐘 PostgreSQL"]
-        QD["📐 Qdrant"]
-        RD["⚡ Redis"]
+        PG[PostgreSQL]
+        QD[Qdrant]
+        RD[Redis]
     end
 
     subgraph Messaging
-        K["📨 Kafka"]
+        K[Kafka]
     end
 
     subgraph Observability
-        P["📊 Prometheus"]
-        G["📈 Grafana"]
-        J["🔭 Jaeger"]
+        P[Prometheus]
+        G[Grafana]
+        J[Jaeger]
     end
 
     A -->|HTTP| T
@@ -123,26 +123,12 @@ flowchart LR
 
     I -.->|Traces| J
     E -.->|Traces| J
-    Q -.->|Traces & Metrics| J
-    L -.->|Traces & Metrics| J
+    Q -.->|Traces| J
+    L -.->|Traces| J
 
     P -.->|Scrape| Q
     P -.->|Scrape| L
     G -.->|Query| P
-
-    style A fill:#1a1a2e,stroke:#0d6efd,color:#e0e0e0
-    style T fill:#1a1a2e,stroke:#0d6efd,color:#e0e0e0
-    style I fill:#0a1628,stroke:#0d6efd,color:#7ec8e3
-    style E fill:#0a1628,stroke:#0d6efd,color:#7ec8e3
-    style L fill:#0a1628,stroke:#0d6efd,color:#7ec8e3
-    style Q fill:#0a1628,stroke:#0d6efd,color:#7ec8e3
-    style PG fill:#1a1a2e,stroke:#4a90d9,color:#e0e0e0
-    style QD fill:#1a1a2e,stroke:#4a90d9,color:#e0e0e0
-    style RD fill:#1a1a2e,stroke:#4a90d9,color:#e0e0e0
-    style K fill:#1a1a2e,stroke:#e67e22,color:#e0e0e0
-    style P fill:#1a1a2e,stroke:#27ae60,color:#e0e0e0
-    style G fill:#1a1a2e,stroke:#27ae60,color:#e0e0e0
-    style J fill:#1a1a2e,stroke:#27ae60,color:#e0e0e0
 ```
 
 <br/>
