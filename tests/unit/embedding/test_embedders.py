@@ -9,7 +9,10 @@ def test_local_embedder_disabled():
 
 @pytest.mark.asyncio
 async def test_openai_embedder_dimension():
-    with patch("services.embedding.embedders.openai.AsyncOpenAI") as mock_openai:
+    with patch("services.embedding.embedders.openai.AsyncOpenAI") as mock_openai, \
+         patch("services.embedding.embedders.openai.settings.OPENAI_EMBEDDING_DIMENSION", 1536), \
+         patch("services.embedding.embedders.openai.settings.OPENAI_EMBEDDING_MODEL_NAME", "text-embedding-3-small"):
+        
         mock_client = MagicMock()
         mock_response = MagicMock()
         mock_response.data = [MagicMock(embedding=[0.2] * 1536)]

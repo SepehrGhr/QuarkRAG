@@ -5,8 +5,11 @@ from services.query.logging_config import logger
 
 class OpenAIEmbedder(BaseEmbedder):
     def __init__(self):
-        logger.info("Initializing OpenAIEmbedder with text-embedding-3-small model in query-service")
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        logger.info("Initializing OpenAIEmbedder in query-service", model=settings.OPENAI_EMBEDDING_MODEL_NAME, base_url=settings.OPENAI_API_BASE)
+        self.client = AsyncOpenAI(
+            api_key=settings.OPENAI_API_KEY,
+            base_url=settings.OPENAI_API_BASE
+        )
 
     async def embed_text(self, text: str) -> list[float]:
         response = await self.client.embeddings.create(
@@ -24,8 +27,8 @@ class OpenAIEmbedder(BaseEmbedder):
 
     @property
     def dimension(self) -> int:
-        return 1536
+        return settings.OPENAI_EMBEDDING_DIMENSION
 
     @property
     def model_name(self) -> str:
-        return "text-embedding-3-small"
+        return settings.OPENAI_EMBEDDING_MODEL_NAME

@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     
     EMBEDDING_PROVIDER: str = "openai"  # "local", "openai", or "ollama"
     OPENAI_API_KEY: str = "your-openai-key-here"
+    OPENAI_API_BASE: str = "https://api.openai.com/v1"
+    OPENAI_EMBEDDING_MODEL_NAME: str = "text-embedding-3-small"
+    OPENAI_EMBEDDING_DIMENSION: int = 1536
     OLLAMA_URL: str = "http://host.docker.internal:11434"
     OLLAMA_EMBEDDING_MODEL_NAME: str = "nomic-embed-text"
     OLLAMA_EMBEDDING_DIMENSION: int = 768
