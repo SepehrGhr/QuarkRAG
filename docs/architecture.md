@@ -1,6 +1,6 @@
 # QuarkRAG — Architecture
 
-> This document is the authoritative reference for every design decision, communication pattern, resilience mechanism, and data-flow in the QuarkRAG platform. It is intended for engineers evaluating the codebase, interviewers reviewing the portfolio, and future contributors extending the system.
+> This document is the authoritative reference for every design decision, communication pattern, resilience mechanism, and data-flow in the QuarkRAG platform.
 
 ---
 
