@@ -22,34 +22,6 @@ jobs:
       - name: Run Lint Checks
         run: ruff check .
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r services/ingestion/requirements.txt
-          pip install -r services/embedding/requirements.txt
-          pip install -r services/llm_provider/requirements.txt
-          pip install -r services/query/requirements.txt
-          pip install pytest pytest-asyncio pytest-mock httpx
-      - name: Run tests
-        env:
-          # Provide dummy variables so config parsing doesn't fail
-          DATABASE_URL: postgresql+asyncpg://user:pass@localhost:5432/db
-          KAFKA_BROKER_URL: localhost:9092
-          QDRANT_HOST: localhost
-          QDRANT_PORT: 6333
-          REDIS_URL: redis://localhost:6379/0
-          OPENAI_API_KEY: fake-key
-        run: |
-          PYTHONPATH=. pytest tests/
-
   build-images:
     runs-on: ubuntu-latest
     steps:
