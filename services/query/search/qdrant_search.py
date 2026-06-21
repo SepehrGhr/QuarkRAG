@@ -19,9 +19,9 @@ async def search_similar_chunks(query_vector: list[float], namespace: str, top_k
     collection_name = settings.COLLECTION_NAME
     
     try:
-        search_result = await client.search(
+        search_result = await client.query_points(
             collection_name=collection_name,
-            query_vector=query_vector,
+            query=query_vector,
             query_filter=qmodels.Filter(
                 must=[
                     qmodels.FieldCondition(
@@ -33,10 +33,10 @@ async def search_similar_chunks(query_vector: list[float], namespace: str, top_k
             limit=top_k
         )
         
-        logger.info("Qdrant ANN search completed", namespace=namespace, results_count=len(search_result))
+        logger.info("Qdrant ANN search completed", namespace=namespace, results_count=len(search_result.points))
         
         chunks = []
-        for hit in search_result:
+        for hit in search_result.points:
             if hit.payload:
                 chunks.append({
                     "id": hit.id,

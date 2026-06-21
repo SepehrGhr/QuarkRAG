@@ -35,13 +35,13 @@ async def upload_document(
         filename=file.filename,
         namespace=namespace,
         chunking_strategy=chunking_strategy,
-        status=DocumentStatus.UPLOADED
+        status=DocumentStatus.uploaded
     )
     db.add(db_doc)
     await db.commit()
     await db.refresh(db_doc)
 
-    db_doc.status = DocumentStatus.CHUNKING
+    db_doc.status = DocumentStatus.chunking
     await db.commit()
 
     try:
@@ -50,7 +50,7 @@ async def upload_document(
         elif chunking_strategy == "markdown":
             chunks = split_text_markdown(content)
         else:
-            db_doc.status = DocumentStatus.FAILED
+            db_doc.status = DocumentStatus.failed
             await db.commit()
             raise IngestionException(f"Unsupported chunking strategy: {chunking_strategy}")
 
@@ -58,7 +58,7 @@ async def upload_document(
         await db.commit()
         await db.refresh(db_doc)
     except Exception as e:
-        db_doc.status = DocumentStatus.FAILED
+        db_doc.status = DocumentStatus.failed
         await db.commit()
         raise IngestionException(f"Chunking failed: {str(e)}")
 
@@ -73,7 +73,7 @@ async def upload_document(
             }
             await kafka_producer.send_message("docs.raw", key=str(db_doc.id), value=payload)
     except Exception as e:
-        db_doc.status = DocumentStatus.FAILED
+        db_doc.status = DocumentStatus.failed
         await db.commit()
         logger.exception("Failed to publish chunks to Kafka", document_id=str(db_doc.id))
         raise IngestionException(f"Failed to publish chunks to queue: {str(e)}", status_code=500)

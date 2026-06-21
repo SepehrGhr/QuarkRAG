@@ -12,3 +12,4 @@ venv/
 .coverage
 htmlcov/
 quarkrag-antigravity/
+scripts/dummy_data/

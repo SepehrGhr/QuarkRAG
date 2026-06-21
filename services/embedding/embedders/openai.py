@@ -14,14 +14,16 @@ class OpenAIEmbedder(BaseEmbedder):
     async def embed_text(self, text: str) -> list[float]:
         response = await self.client.embeddings.create(
             input=[text],
-            model=self.model_name
+            model=self.model_name,
+            encoding_format="float"
         )
         return response.data[0].embedding
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
         response = await self.client.embeddings.create(
             input=texts,
-            model=self.model_name
+            model=self.model_name,
+            encoding_format="float"
         )
         return [item.embedding for item in response.data]
 

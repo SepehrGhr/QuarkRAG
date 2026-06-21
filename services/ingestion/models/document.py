@@ -6,11 +6,11 @@ from sqlalchemy.dialects.postgresql import UUID
 from services.ingestion.database import Base
 
 class DocumentStatus(str, enum.Enum):
-    UPLOADED = "uploaded"
-    CHUNKING = "chunking"
-    EMBEDDING = "embedding"
-    READY = "ready"
-    FAILED = "failed"
+    uploaded = "uploaded"
+    chunking = "chunking"
+    embedding = "embedding"
+    ready = "ready"
+    failed = "failed"
 
 class Document(Base):
     __tablename__ = "documents"
@@ -21,6 +21,6 @@ class Document(Base):
     chunk_count = Column(Integer, nullable=True)
     chunking_strategy = Column(String, nullable=True)
     embedding_provider = Column(String, nullable=True)
-    status = Column(SQLEnum(DocumentStatus), nullable=False, default=DocumentStatus.UPLOADED)
+    status = Column(SQLEnum(DocumentStatus), nullable=False, default=DocumentStatus.uploaded)
     uploaded_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)

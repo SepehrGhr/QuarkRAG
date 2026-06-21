@@ -69,7 +69,7 @@ def test_get_document_success(client, mock_db):
         filename="test.txt",
         namespace="default",
         chunking_strategy="recursive",
-        status=DocumentStatus.READY,
+        status=DocumentStatus.ready,
         uploaded_at=now,
         updated_at=now
     )
@@ -92,7 +92,7 @@ def test_list_documents(client, mock_db):
         filename="doc1.txt",
         namespace="ns1",
         chunking_strategy="recursive",
-        status=DocumentStatus.READY,
+        status=DocumentStatus.ready,
         uploaded_at=now,
         updated_at=now
     )
@@ -101,7 +101,7 @@ def test_list_documents(client, mock_db):
         filename="doc2.txt",
         namespace="ns1",
         chunking_strategy="recursive",
-        status=DocumentStatus.UPLOADED,
+        status=DocumentStatus.uploaded,
         uploaded_at=now,
         updated_at=now
     )
@@ -129,7 +129,7 @@ def test_delete_document(client, mock_db):
             filename="test.txt",
             namespace="default",
             chunking_strategy="recursive",
-            status=DocumentStatus.READY,
+            status=DocumentStatus.ready,
             uploaded_at=now,
             updated_at=now
         )
