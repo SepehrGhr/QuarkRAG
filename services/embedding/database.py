@@ -29,7 +29,7 @@ async def update_document_status(document_id: str, status: str, chunk_count: int
             await session.execute(text(query), params)
             await session.commit()
             logger.info("Updated document status in DB", document_id=document_id, status=status)
-        except Exception as e:
+        except Exception:
             await session.rollback()
             logger.exception("Failed to update document status in DB", document_id=document_id, status=status)
             raise

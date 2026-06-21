@@ -1,5 +1,4 @@
 import json
-import asyncio
 import redis.asyncio as aioredis
 from aiokafka import AIOKafkaConsumer
 from tenacity import retry, stop_after_attempt, wait_exponential

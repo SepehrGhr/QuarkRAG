@@ -26,7 +26,7 @@ async def run_delete_consumer():
             if document_id and namespace:
                 try:
                     await delete_vectors_by_document(document_id, namespace)
-                except Exception as e:
+                except Exception:
                     logger.exception("Failed to delete vectors for document from Qdrant", document_id=document_id)
     finally:
         await consumer.stop()

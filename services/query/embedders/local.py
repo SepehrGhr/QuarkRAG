@@ -1,4 +1,3 @@
-import asyncio
 # from sentence_transformers import SentenceTransformer
 from services.query.embedders.base import BaseEmbedder
 from services.query.logging_config import logger

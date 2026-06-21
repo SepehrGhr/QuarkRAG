@@ -14,7 +14,7 @@ class OllamaProvider(BaseLLMProvider):
         logger.info("Sending generation request to local Ollama", model=settings.OLLAMA_MODEL_NAME, url=settings.OLLAMA_URL)
         
         system_content = "You are a helpful assistant. Answer the user's question using the provided context chunks. If you cannot find the answer, state that you don't know."
-        user_content = f"Context:\n" + "\n---\n".join(context) + f"\n\nQuestion: {prompt}"
+        user_content = "Context:\n" + "\n---\n".join(context) + f"\n\nQuestion: {prompt}"
         
         payload = {
             "model": settings.OLLAMA_MODEL_NAME,

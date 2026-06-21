@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 @pytest.fixture(autouse=True)
 def mock_llm_deps():

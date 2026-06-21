@@ -1,7 +1,5 @@
 import pytest
-import time
 import asyncio
-from unittest.mock import patch
 from services.llm_provider.circuit_breaker.breaker import CircuitBreaker, CircuitBreakerState
 
 @pytest.mark.asyncio

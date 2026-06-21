@@ -129,7 +129,7 @@ async def delete_document(
         }
         await kafka_producer.send_message("docs.delete", key=str(document_id), value=payload)
         logger.info("Published document deletion request", document_id=str(document_id))
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to publish delete event to Kafka", document_id=str(document_id))
 
     return None

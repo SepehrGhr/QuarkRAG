@@ -1,5 +1,7 @@
 import asyncio
+import os
 from logging.config import fileConfig
+from pathlib import Path
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -8,11 +10,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from services.ingestion.database import Base
-from services.ingestion.models.document import Document
 target_metadata = Base.metadata
-
-from pathlib import Path
-import os
 
 # Load environment variables from central .env file if running locally
 root_dir = Path(__file__).resolve().parent.parent

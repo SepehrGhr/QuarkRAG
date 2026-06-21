@@ -26,6 +26,6 @@ async def delete_vectors_by_document(document_id: str, namespace: str):
             )
         )
         logger.info("Deleted vectors from Qdrant", document_id=document_id, namespace=namespace)
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to delete vectors from Qdrant", document_id=document_id, namespace=namespace)
         raise

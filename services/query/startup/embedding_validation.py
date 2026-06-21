@@ -40,6 +40,6 @@ async def validate_embedding_consistency():
             sys.exit(1)
             
         logger.info("Embedding consistency validation succeeded")
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to validate embedding consistency during startup")
         sys.exit(1)

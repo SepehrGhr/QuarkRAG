@@ -1,5 +1,4 @@
 import hashlib
-import json
 import redis.asyncio as aioredis
 from services.query.config import settings
 from services.query.logging_config import logger

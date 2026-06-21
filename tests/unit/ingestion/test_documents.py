@@ -31,7 +31,7 @@ def client(mock_db):
     app.dependency_overrides.clear()
 
 def test_upload_document(client, mock_db):
-    with patch("services.ingestion.routers.documents.split_text_recursive", return_value=["chunk1", "chunk2"]) as mock_split:
+    with patch("services.ingestion.routers.documents.split_text_recursive", return_value=["chunk1", "chunk2"]):
         mock_db.commit = AsyncMock()
 
         response = client.post(

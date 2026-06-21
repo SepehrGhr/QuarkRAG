@@ -20,7 +20,7 @@ class OpenAIProvider(BaseLLMProvider):
         logger.info("Sending generation request to OpenAI", model=settings.OPENAI_MODEL_NAME)
         
         system_content = "You are a helpful assistant. Answer the user's question using the provided context chunks. If you cannot find the answer, state that you don't know."
-        user_content = f"Context:\n" + "\n---\n".join(context) + f"\n\nQuestion: {prompt}"
+        user_content = "Context:\n" + "\n---\n".join(context) + f"\n\nQuestion: {prompt}"
         
         response = await self.client.chat.completions.create(
             model=settings.OPENAI_MODEL_NAME,

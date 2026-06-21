@@ -2,7 +2,6 @@ from qdrant_client import AsyncQdrantClient
 from qdrant_client.http import models as qmodels
 from services.query.config import settings
 from services.query.logging_config import logger
-from services.query.embedders import get_embedder
 
 _qdrant_client = None
 
@@ -47,6 +46,6 @@ async def search_similar_chunks(query_vector: list[float], namespace: str, top_k
                     "document_id": hit.payload.get("document_id")
                 })
         return chunks
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to search Qdrant", namespace=namespace)
         raise

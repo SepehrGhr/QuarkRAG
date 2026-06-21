@@ -23,7 +23,7 @@ async def init_qdrant_collection():
     try:
         collections = await client.get_collections()
         exists = any(c.name == collection_name for c in collections.collections)
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to connect to Qdrant or retrieve collections")
         raise
 
@@ -48,7 +48,7 @@ async def init_qdrant_collection():
                 }
             )
             logger.info("Qdrant collection created successfully", collection_name=collection_name)
-        except Exception as e:
+        except Exception:
             logger.exception("Failed to create Qdrant collection", collection_name=collection_name)
             raise
     else:
@@ -68,6 +68,6 @@ async def init_qdrant_collection():
                     current_model=embedder.model_name
                 )
                 raise RuntimeError("Embedding consistency mismatch in Qdrant collection metadata")
-        except Exception as e:
+        except Exception:
             logger.exception("Error checking collection consistency", collection_name=collection_name)
             raise

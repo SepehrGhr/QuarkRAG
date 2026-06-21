@@ -34,6 +34,6 @@ async def upsert_vector(
             points=[point]
         )
         logger.debug("Vector upserted to Qdrant", point_id=point_id, document_id=document_id, chunk_index=chunk_index)
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to upsert vector to Qdrant", document_id=document_id, chunk_index=chunk_index)
         raise

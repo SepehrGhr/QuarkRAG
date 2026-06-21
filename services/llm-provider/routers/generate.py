@@ -2,7 +2,7 @@ import time
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from prometheus_client import Gauge, Histogram
-from services.llm_provider.circuit_breaker.breaker import CircuitBreaker, CircuitBreakerState
+from services.llm_provider.circuit_breaker.breaker import CircuitBreaker
 from services.llm_provider.providers.openai import OpenAIProvider
 from services.llm_provider.providers.ollama import OllamaProvider
 from services.llm_provider.logging_config import logger
@@ -59,7 +59,7 @@ async def generate_response(request: GenerateRequest):
             duration = time.perf_counter() - start
             REQUEST_DURATION_HISTOGRAM.labels(provider="openai", status="success").observe(duration)
             return GenerateResponse(answer=answer, provider="openai")
-        except Exception as e:
+        except Exception:
             logger.exception("Primary provider failed")
             await breaker.record_failure()
             duration = time.perf_counter() - start
@@ -76,7 +76,7 @@ async def generate_response(request: GenerateRequest):
                 duration_fallback = time.perf_counter() - start_fallback
                 REQUEST_DURATION_HISTOGRAM.labels(provider="ollama", status="success").observe(duration_fallback)
                 return GenerateResponse(answer=answer, provider="ollama")
-            except Exception as fe:
+            except Exception:
                 logger.exception("Fallback provider failed as well")
                 duration_fallback = time.perf_counter() - start_fallback
                 REQUEST_DURATION_HISTOGRAM.labels(provider="ollama", status="failure").observe(duration_fallback)
@@ -93,7 +93,7 @@ async def generate_response(request: GenerateRequest):
             duration = time.perf_counter() - start
             REQUEST_DURATION_HISTOGRAM.labels(provider="ollama", status="success").observe(duration)
             return GenerateResponse(answer=answer, provider="ollama")
-        except Exception as e:
+        except Exception:
             logger.exception("Fallback provider failed")
             duration = time.perf_counter() - start
             REQUEST_DURATION_HISTOGRAM.labels(provider="ollama", status="failure").observe(duration)
