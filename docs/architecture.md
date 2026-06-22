@@ -846,8 +846,12 @@ Default policy: **deny-all** ingress and egress applied to the entire `quarkrag`
 | embedding-service | Qdrant | 6333 | ✅ | `allow-embedding-to-qdrant.yaml` |
 | ingestion-service | PostgreSQL | 5432 | ✅ | `allow-ingestion-to-postgres.yaml` |
 | embedding-service | PostgreSQL | 5432 | ✅ | `allow-embedding-to-postgres.yaml` |
+| ingestion-service | Kafka | 9092 | ✅ | `allow-ingestion-to-kafka.yaml` |
+| embedding-service | Kafka | 9092 | ✅ | `allow-embedding-to-kafka.yaml` |
+| query-service | Kafka | 9092 | ✅ | `allow-query-to-kafka.yaml` |
 | Any other | PostgreSQL | 5432 | ❌ | (covered by deny-all) |
 | Any other | Qdrant | 6333 | ❌ | (covered by deny-all) |
+| Any other | Kafka | 9092 | ❌ | (covered by deny-all) |
 | External | any | any | ❌ | (covered by deny-all) |
 
 Each policy file includes comments explaining the business reason for the rule (e.g., "Query service needs read access to Qdrant for vector similarity search"). This makes the network policies a **security design artifact**, not just boilerplate YAML.
@@ -911,7 +915,7 @@ Production manifests in `infra/k8s/` include:
 | Secrets | `secrets.yaml` (uses `envsubst` for templating, `stringData` format) |
 | Deployments | 8 combined YAML files (each includes Deployment + Service) |
 | Services | ClusterIP for all services; LoadBalancer for Traefik |
-| NetworkPolicies | 9 files (deny-all + 8 allows) |
+| NetworkPolicies | 12 files (deny-all + 11 allows) |
 | Job | `db-migrate-job.yaml` (Alembic migration) |
 
 Applied via `infra/k8s/apply.sh` which loads `.env`, uses `envsubst` for config/secret templating, and applies manifests in dependency order.

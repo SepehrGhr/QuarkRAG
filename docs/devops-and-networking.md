@@ -1074,6 +1074,10 @@ allow-query-to-qdrant.yaml              → query-service ↔ qdrant :6333
 allow-query-to-redis.yaml               → query-service ↔ redis :6379
 
 allow-query-to-llm.yaml                 → query-service ↔ llm-provider-service :8000
+
+allow-ingestion-to-kafka.yaml           → ingestion-service ↔ kafka :9092
+allow-embedding-to-kafka.yaml           → embedding-service ↔ kafka :9092
+allow-query-to-kafka.yaml               → query-service ↔ kafka :9092
 ```
 
 **What is NOT allowed by these policies:**
@@ -1086,8 +1090,6 @@ allow-query-to-llm.yaml                 → query-service ↔ llm-provider-servi
 - No pod can reach any other pod in a different namespace.
 
 This means a compromised `ingestion-service` pod cannot pivot to `qdrant` or the LLM provider — the kernel drops those packets before they ever arrive, regardless of what code is running in the pod.
-
-Note: Kafka connectivity policies are not yet enumerated as separate files (the services connect to Kafka, which would require additional allow policies in a fully locked-down deployment), but the framework is in place to add them following the same pattern.
 
 ---
 
