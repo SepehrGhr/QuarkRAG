@@ -1,8 +1,6 @@
 import os
 import json
 import time
-import urllib.request
-import urllib.error
 
 # We will use urllib for queries, but we need requests for multipart/form-data.
 # Let's try importing requests, or print a helpful error if it's missing.
